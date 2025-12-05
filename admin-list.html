@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlaç Yönetim Paneli</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 15px; }
+        h1 { color: #d9534f; margin: 0; }
+        .action-buttons button, .logout-btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s; }
+        .add-btn { background-color: #5cb85c; color: white; }
+        .add-btn:hover { background-color: #4cae4c; }
+        .logout-btn { background-color: #f0ad4e; color: white; }
+        .logout-btn:hover { background-color: #ec971f; }
+        
+        #drug-table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
+        #drug-table th, #drug-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        #drug-table th { background-color: #007bff; color: white; font-weight: bold; }
+        .edit-btn { background-color: #007bff; color: white; margin-right: 5px; }
+        .delete-btn { background-color: #d9534f; color: white; }
+        .edit-btn:hover { background-color: #0056b3; }
+        .delete-btn:hover { background-color: #c9302c; }
+
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+        }
+        #sort-indicator {
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>İlaç Yönetimi</h1>
+        <div class="action-buttons">
+            <button onclick="window.location.href='admin-categories.html'" class="add-btn" style="background-color: #f0ad4e;">📚 Kategorileri Yönet</button> 
+            
+            <button onclick="window.location.href='admin-form.html'" class="add-btn">➕ Yeni İlaç Ekle</button>
+            <button id="logout-button" class="logout-btn">Çıkış Yap</button>
+        </div>
+    </header>
+
+    <table id="drug-table">
+        <thead>
+            <tr>
+                <th id="sortByName" class="sortable-header">
+                    İlaç Adı
+                    <span id="sort-indicator"></span> 
+                </th>
+                <th>Kategoriler</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody id="drug-list-body">
+            </tbody>
+    </table>
+
+    <script>
+        let drugDatabase = [];
+        let currentSortOrder = 'asc'; 
+
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            alert('Yetkisiz Erişim! Lütfen giriş yapın.');
+            window.location.href = 'admin.html';
+        }
+
+        document.getElementById('logout-button').onclick = function() {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'admin.html';
+        };
+
+        async function fetchInitialData() {
+            try {
+                const response = await fetch('drugs.json');
+                return response.ok ? await response.json() : [];
+            } catch (error) {
+                console.error("JSON dosyasından ilk veri yüklenirken hata:", error);
+                return [];
+            }
+        }
+
+        async function loadDrugDatabase() {
+            const storedDrugs = localStorage.getItem('drugDatabase');
+            if (storedDrugs) {
+                drugDatabase = JSON.parse(storedDrugs);
+            } else {
+                drugDatabase = await fetchInitialData();
+            }
+        }
+
+        function saveDrugDatabase() {
+            localStorage.setItem('drugDatabase', JSON.stringify(drugDatabase));
+        }
+        
+        function deleteDrug(id) {
+            if (confirm(`'${drugDatabase.find(d => d.id === id)?.name}' adlı ilacı silmek istediğinizden emin misiniz?`)) {
+                drugDatabase = drugDatabase.filter(drug => drug.id !== id);
+                saveDrugDatabase();
+                renderList(drugDatabase);
+            }
+        }
+        
+        // GÜNCEL FONKSİYON: Kategorileri metin olarak döndürür (Geriye uyumluluk dahil)
+        function getCategoriesText(drug) {
+            // Yeni format: categories dizisi kontrolü
+            if (Array.isArray(drug.categories) && drug.categories.length > 0) {
+                return drug.categories.join(', '); 
+            } 
+            // Eski format: category string kontrolü
+            else if (drug.category) { 
+                return drug.category; 
+            }
+            return 'Kategori Yok';
+        }
+
+        function renderList(drugs) {
+            const listBody = document.getElementById('drug-list-body');
+            listBody.innerHTML = '';
+            
+            if (drugs.length === 0) {
+                listBody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Veri tabanında ilaç bulunmamaktadır.</td></tr>';
+                return;
+            }
+
+            drugs.forEach(drug => {
+                const row = listBody.insertRow();
+                row.innerHTML = `
+                    <td>${drug.name}</td>
+                    <td>${getCategoriesText(drug)}</td> 
+                    <td>
+                        <button onclick="window.location.href='admin-form.html?id=${drug.id}'" class="edit-btn">Düzenle</button>
+                        <button onclick="deleteDrug('${drug.id}')" class="delete-btn">Sil</button>
+                    </td>
+                `;
+            });
+            updateSortIndicator(); 
+        }
+
+        function sortDrugsByName() {
+            if (currentSortOrder === 'asc') {
+                drugDatabase.sort((a, b) => b.name.localeCompare(a.name, 'tr'));
+                currentSortOrder = 'desc';
+            } else {
+                drugDatabase.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+                currentSortOrder = 'asc';
+            }
+            renderList(drugDatabase);
+        }
+        
+        function updateSortIndicator() {
+            const indicator = document.getElementById('sort-indicator');
+            if (indicator) {
+                indicator.textContent = currentSortOrder === 'asc' ? '▲' : '▼'; 
+            }
+        }
+
+        async function initList() {
+            await loadDrugDatabase();
+
+            drugDatabase.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+            
+            renderList(drugDatabase);
+            
+            const sortHeader = document.getElementById('sortByName');
+            if (sortHeader) {
+                sortHeader.onclick = sortDrugsByName;
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', initList);
+
+    </script>
+</body>
+</html>

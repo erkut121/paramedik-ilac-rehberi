@@ -1,0 +1,182 @@
+[
+    { 
+        "id": "adrenalin", 
+        "name": "Adrenalin (Epinefrin)", 
+        "category": "Kardiyoloji/Resüsitasyon", 
+        "image_url": "images/adrenalin.jpg", 
+        "short_summary": "\nAlfa ve Beta adrenerjik reseptörleri aktive ederek bronkodilatasyon, vazokonstrüksiyon \nve kardiyak uyarı sağlar. Temel resüsitasyon ilacıdır.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nAlfa (Vazokonstriksiyon) ve Beta-1 (Pozitif inotrop/kronotrop) reseptör agonistidir.\n", 
+            "endikasyon": "\n1. Kardiyak arrest (Asistoli, PEA, VF/VT).\n2. Anaflaksi (hayat kurtarıcı).\n3. Ciddi Hipotansiyon ve Bradikardi (infüzyon).\n", 
+            "kontraendikasyon": "\nKardiyak arrest dışında: Hipertansiyon, Taşiaritmi.\n", 
+            "yan_etki": "\nTaşikardi, hipertansiyon, miyokardiyal iskemi, anksiyete, baş ağrısı.\n", 
+            "uygulama_yolu": "\nIV, IO, IM, Endotrakeal.\n", 
+            "önemli_not": "\nKardiyak arrestte IV/IO 1 mg, Anaflaksidede IM 0.5 mg (1:1000) verilir.\n"
+        }
+    },
+    { 
+        "id": "morfin", 
+        "name": "Morfin Sülfat", 
+        "category": "Analjezik/Opioid", 
+        "image_url": "images/morfin.jpg", 
+        "short_summary": "\nGüçlü bir opioid analjeziktir. Ağrıyı dindirir ve anksiyeteyi azaltır.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nSantral sinir sistemindeki mü (μ) opioid reseptörlerini aktive ederek analjezi sağlar.\n", 
+            "endikasyon": "\nŞiddetli akut ağrı, Akut Kardiyojenik Akciğer Ödemi.\n", 
+            "kontraendikasyon": "\nSolunum depresyonu, Kafa travması (rölatif).\n", 
+            "yan_etki": "\nSolunum depresyonu (en tehlikelisi), Bulantı/kusma, Hipotansiyon.\n", 
+            "uygulama_yolu": "\nIV, IM, SC, PO.\n", 
+            "önemli_not": "\nYavaş IV uygulanmalıdır. Yan etkileri nalokson ile geri döndürülebilir.\n"
+        }
+    },
+    { 
+        "id": "lidokain", 
+        "name": "Lidokain", 
+        "category": "Kardiyoloji/Antiaritmik", 
+        "image_url": "images/lidokain.jpg", 
+        "short_summary": "\nSınıf IB antiaritmiktir. Ventriküler aritmilerin tedavisinde kullanılır.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nSodyum kanallarını bloke eder.\n", 
+            "endikasyon": "\nVentriküler taşikardi, Ventriküler fibrilasyon.\n", 
+            "kontraendikasyon": "\nAğır kalp bloğu, Bradikardi.\n", 
+            "yan_etki": "\nNöbet, konfüzyon, bradikardi.\n", 
+            "uygulama_yolu": "\nIV bolus ve infüzyon.\n", 
+            "önemli_not": "\nKaraciğer yetmezliği olanlarda doz azaltılır.\n"
+        }
+    },
+    { 
+        "id": "diltiazem", 
+        "name": "Diltiazem", 
+        "category": "Kardiyoloji/Vazodilatör", 
+        "image_url": "images/diltiazem.jpg", 
+        "short_summary": "\nNon-dihidropiridin kalsiyum kanal blokeridir. Koroner vazodilatasyon ve kalp hızı kontrolü sağlar.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nKalsiyum kanalını bloke eder.\n", 
+            "endikasyon": "\nSupraventriküler taşikardi (SVT), Atriyal fibrilasyon, Anjina pektoris.\n", 
+            "kontraendikasyon": "\nWPW sendromu, Ciddi hipotansiyon.\n", 
+            "yan_etki": "\nHipotansiyon, bradikardi, baş dönmesi.\n", 
+            "uygulama_yolu": "\nIV, PO.\n", 
+            "önemli_not": "\nBeta blokerlerle birlikte kullanımı dikkat gerektirir.\n"
+        }
+    },
+    { 
+        "id": "noradrenalin", 
+        "name": "Noradrenalin (Norepinefrin)", 
+        "category": "İnotrop/Vazopresör", 
+        "image_url": "images/noradrenalin.jpg", 
+        "short_summary": "\nAlfa reseptörleri üzerinden güçlü vazokonstrüksiyon sağlar. Septik şok tedavisinde ilk tercih edilen vazopressördür.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nPrimer olarak Alfa reseptör agonistidir.\n", 
+            "endikasyon": "\nSeptik şok, Nörojenik şok, Ciddi hipotansiyon.\n", 
+            "kontraendikasyon": "\nHipotansiyonun hacim eksikliğinden kaynaklandığı durumlar.\n", 
+            "yan_etki": "\nTaşiaritmi, Periferik iskemi.\n", 
+            "uygulama_yolu": "\nIV infüzyon.\n", 
+            "önemli_not": "\nEkstravazasyon durumunda ciddi doku hasarına neden olabilir.\n"
+        }
+    },
+    { 
+        "id": "diazepam", 
+        "name": "Diazepam (Diazem)", 
+        "category": "Nörolojik/Antikonvülzan", 
+        "image_url": "images/diazepam.jpg", 
+        "short_summary": "\nBenzodiazepin grubu sedatif ve antikonvülzandır. Akut nöbet ve anksiyete tedavisinde kullanılır.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nGABA reseptör aktivitesini artırarak santral sinir sisteminde inhibisyon sağlar.\n", 
+            "endikasyon": "\nStatus Epileptikus, Ciddi anksiyete, Kas spazmları.\n", 
+            "kontraendikasyon": "\nAşırı duyarlılık, Ağır solunum yetmezliği.\n", 
+            "yan_etki": "\nSedasyon, solunum depresyonu, hipotansiyon.\n", 
+            "uygulama_yolu": "\nIV, Rektal, PO.\n", 
+            "önemli_not": "\nIV yavaş uygulanmalıdır.\n"
+        }
+    },
+    { 
+        "id": "nalokson", 
+        "name": "Nalokson", 
+        "category": "Antidot", 
+        "image_url": "images/nalokson.jpg", 
+        "short_summary": "\nOpioid zehirlenmelerinde solunum depresyonunu geri döndürmek için kullanılan opioid antagonistidir.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nOpioid reseptörlerine bağlanarak opioidlerin etkisini tersine çevirir.\n", 
+            "endikasyon": "\nAkut opioid zehirlenmesi ve aşırı doz.\n", 
+            "kontraendikasyon": "\nBilinen kontrendikasyonu yoktur.\n", 
+            "yan_etki": "\nHızlı geri döndürme durumunda bulantı/kusma, taşikardi.\n", 
+            "uygulama_yolu": "\nIV, IM, SC, İntranazal.\n", 
+            "önemli_not": "\nYarı ömrü kısa olduğu için tekrar doz gerekebilir.\n"
+        }
+    },
+    { 
+        "id": "salbutamol", 
+        "name": "Salbutamol (Ventolin)", 
+        "category": "Solunum", 
+        "image_url": "images/salbutamol.jpg", 
+        "short_summary": "\nKısa etkili Beta-2 agonistidir (SABA). Akut astım ve KOAH alevlenmelerinde bronşları genişletir.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nBronşiyal düz kasta Beta-2 reseptörlerini aktive ederek bronkodilatasyon sağlar.\n", 
+            "endikasyon": "\nAstım akut atak, KOAH alevlenmesi.\n", 
+            "kontraendikasyon": "\nTirotoksikoz (rölatif), Taşiaritmi.\n", 
+            "yan_etki": "\nTaşikardi, tremor (titreme), baş ağrısı, hipokalemi.\n", 
+            "uygulama_yolu": "\nİnhalasyon (nebülizasyon/MDI), PO.\n", 
+            "önemli_not": "\nKullanım sıklığı hekim talimatıyla belirlenmelidir.\n"
+        }
+    },
+    { 
+        "id": "metilprednizolon", 
+        "name": "Metilprednizolon (Deltacortril)", 
+        "category": "Endokrin/Alerji", 
+        "image_url": "images/metilprednizolon.jpg", 
+        "short_summary": "\nOrta etkili sentetik glukokortikosteroiddir. Güçlü antiinflamatuar ve immünsupresif etkiye sahiptir.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nKortikosteroid reseptörlerine bağlanarak pro-inflamatuar medyatörlerin üretimini azaltır.\n", 
+            "endikasyon": "\nAstım/KOAH alevlenmesi, Anaflaksi, Ciddi alerjik reaksiyonlar.\n", 
+            "kontraendikasyon": "\nSistemik mantar enfeksiyonları.\n", 
+            "yan_etki": "\nHiperglisemi, Cushing Sendromu (uzun süreli).\n", 
+            "uygulama_yolu": "\nIV, IM, PO.\n", 
+            "önemli_not": "\nUzun süreli kullanım sonrası ani kesilmemelidir.\n"
+        }
+    },
+    { 
+        "id": "dextroz", 
+        "name": "Dextroz Çözeltileri (%50 Dextroz)", 
+        "category": "IV Sıvı/Metabolik", 
+        "image_url": "images/dextroz.jpg", 
+        "short_summary": "\nHücrelere enerji sağlar. Hipoglisemi tedavisinde ve sıvı desteğinde kullanılır.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nHücrelere hızla glukoz sağlayarak hipoglisemiyi düzeltir.\n", 
+            "endikasyon": "\nHipoglisemi, Sıvı desteği.\n", 
+            "kontraendikasyon": "\nHiperglisemi, Diyabetik ketoasidoz (DKA).\n", 
+            "yan_etki": "\nHiperglisemi, Ekstravazasyon (doku hasarı).\n", 
+            "uygulama_yolu": "\nIV bolus, IV infüzyon.\n", 
+            "önemli_not": "\nHipoglisemi tedavisinde %50 Dextroz 25-50 mL IV bolus verilir.\n"
+        }
+    },
+    { 
+        "id": "mannitol", 
+        "name": "%20 Mannitol", 
+        "category": "IV Sıvı/Diüretik", 
+        "image_url": "images/mannitol.jpg", 
+        "short_summary": "\nOsmotik bir diüretiktir. İntrakraniyal basıncı düşürmek (KİBAS) için kullanılır.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nPlazmanın ozmolaritesini artırarak dokulardan sıvıyı damar içine çeker.\n", 
+            "endikasyon": "\nKafa Travması/İntrakraniyal basınç artışı (KİBAS), Akut böbrek yetmezliği profilaksisi.\n", 
+            "kontraendikasyon": "\nCiddi sıvı yüklenmesi, Konjestif kalp yetmezliği.\n", 
+            "yan_etki": "\nSıvı yüklenmesi, Hipotansiyon, Elektrolit dengesizliği.\n", 
+            "uygulama_yolu": "\nIV infüzyon.\n", 
+            "önemli_not": "\nFiltreli set kullanılmalıdır.\n"
+        }
+    },
+    { 
+        "id": "isolyte", 
+        "name": "Isolyte", 
+        "category": "IV Sıvı", 
+        "image_url": "images/isolyte.jpg", 
+        "short_summary": "\nElektrolit dengesini sağlamak için tasarlanmış bir sıvıdır. Dehidratasyon tedavisinde kullanılır.\n", 
+        "info": { 
+            "farmakolojik_etki": "\nSodyum, Kalsiyum, Magnezyum, Potasyum gibi temel elektrolitleri içerir.\n", 
+            "endikasyon": "\nDehidratasyon, Elektrolit ikamesi, Rutin sıvı desteği.\n", 
+            "kontraendikasyon": "\nAğır kalp yetmezliği.\n", 
+            "yan_etki": "\nSıvı yüklenmesi.\n", 
+            "uygulama_yolu": "\nIV infüzyon.\n", 
+            "önemli_not": "\nHekim talimatına göre infüzyon hızı belirlenir.\n"
+        }
+    }
+]

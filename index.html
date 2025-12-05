@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramedik İlaç Rehberi - Giriş</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 40px; background-color: #f0f2f5; text-align: center; }
+        h1 { color: #007bff; margin-bottom: 40px; }
+        .section-container { display: flex; flex-direction: column; align-items: center; gap: 40px; }
+        .filter-section { background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); width: 80%; max-width: 800px; }
+        h2 { color: #d9534f; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        
+        /* Arama kutusu stilleri */
+        .search-container { 
+            position: relative; 
+            width: 100%;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+        #search-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        #search-button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #search-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Otomatik Tamamlama Kutusu Stili */
+        #suggestions-box {
+            position: absolute;
+            top: 100%; 
+            left: 0;
+            right: 0;
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-top: none;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 6px 6px;
+            text-align: left;
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #eee;
+        }
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f8ff;
+        }
+
+        /* Diğer stiller */
+        .button-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .filter-button { 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 6px; 
+            color: white; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+        }
+        
+        /* ⭐ Kategori Renkleri (8 Renk) ⭐ */
+        .category-btn-1 { background-color: #007bff; } /* Mavi */
+        .category-btn-1:hover { background-color: #0056b3; }
+
+        .category-btn-2 { background-color: #5cb85c; } /* Yeşil */
+        .category-btn-2:hover { background-color: #4cae4c; }
+
+        .category-btn-3 { background-color: #f0ad4e; } /* Turuncu */
+        .category-btn-3:hover { background-color: #ec971f; }
+
+        .category-btn-4 { background-color: #d9534f; } /* Kırmızı */
+        .category-btn-4:hover { background-color: #c9302c; }
+        
+        .category-btn-5 { background-color: #6f42c1; } /* Mor */
+        .category-btn-5:hover { background-color: #5a32a6; }
+
+        .category-btn-6 { background-color: #20c997; } /* Turkuaz */
+        .category-btn-6:hover { background-color: #17a97c; }
+
+        .category-btn-7 { background-color: #fd7e14; } /* Koyu Turuncu */
+        .category-btn-7:hover { background-color: #d36a11; }
+
+        .category-btn-8 { background-color: #e83e8c; } /* Pembe */
+        .category-btn-8:hover { background-color: #c8236d; }
+
+
+        .admin-link { display: block; margin-top: 30px; font-size: 0.9em; color: #007bff; text-decoration: none; }
+        .admin-link:hover { text-decoration: underline; }
+
+        #alpha-buttons .filter-button {
+            padding: 8px 12px;
+            font-size: 0.9em;
+            background-color: #6c757d; 
+        }
+        #alpha-buttons .filter-button:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>💊 Paramedik İlaç Rehberi</h1>
+    
+    <div class="section-container">
+        
+        <div class="filter-section">
+            <h2>İlaç Ara</h2>
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="İlaç adını yazın..." 
+                                onkeyup="showSuggestions(this.value)" 
+                                onkeydown="if (event.key === 'Enter') performSearch()">
+                    <button id="search-button" onclick="performSearch()">ARA</button>
+                </div>
+                <div id="suggestions-box"></div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <h2>Kategoriye Göre İlaçlar</h2>
+            <div class="button-group" id="category-buttons">
+                </div>
+        </div>
+
+        <div class="filter-section">
+            <h2>Alfabetik Arama</h2>
+            <div class="button-group" id="alpha-buttons">
+                </div>
+        </div>
+        
+        <a href="admin.html" class="admin-link">🛠️ Yönetim Paneli</a>
+
+    </div>
+
+    <script>
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        const alphaButtonsContainer = document.getElementById('alpha-buttons');
+        const categoryButtonsContainer = document.getElementById('category-buttons');
+        const suggestionsBox = document.getElementById('suggestions-box');
+        let drugDatabase = []; 
+
+        const categoryColors = [
+            'category-btn-1', 'category-btn-2', 'category-btn-3', 'category-btn-4',
+            'category-btn-5', 'category-btn-6', 'category-btn-7', 'category-btn-8'
+        ];
+        
+        // ⭐ EMOJİ HARİTASI KALDIRILDI ⭐
+
+        // Varsayılan kategoriler
+        const defaultCategories = [
+            'Kardiyoloji/Resüsitasyon', 'Kardiyoloji/Antiaritmik', 'Kardiyoloji/Vazodilatör', 'Kardiyoloji/KKB', 
+            'Kardiyoloji/Antiplatelet', 'Kardiyoloji/Diüretik', 'Kardiyoloji/Antihipertansif', 
+            'Nörolojik/Sedatif', 'Nörolojik/Antikonvülzan', 'Analjezik/Opioid', 'İnotrop/Vazopresör', 
+            'Antidot', 'Solunum', 'Alerji', 'Endokrin/Alerji', 'Elektrolit', 'Gastrointestinal', 
+            'Anestezi', 'IV Sıvı', 'IV Sıvı/Metabolik', 'IV Sıvı/Diüretik'
+        ];
+        
+        // Veritabanını localStorage'dan veya drugs.json'dan yükler
+        async function loadDrugDatabase() {
+            try {
+                const storedDrugs = localStorage.getItem('drugDatabase');
+                if (storedDrugs) {
+                    drugDatabase = JSON.parse(storedDrugs);
+                } else {
+                    const response = await fetch('drugs.json'); 
+                    drugDatabase = response.ok ? await response.json() : [];
+                }
+            } catch (error) {
+                console.error("Veritabanı yüklenirken hata oluştu:", error);
+                drugDatabase = [];
+            }
+        }
+        
+        // drug-list.html sayfasına yönlendirme fonksiyonu
+        function goToDrugList(type, value) {
+            window.location.href = `drug-list.html?type=${type}&value=${encodeURIComponent(value)}`;
+        }
+
+        // Sadece kelime başlangıcıyla eşleşenleri gösterir
+        function showSuggestions(query) {
+            suggestionsBox.innerHTML = '';
+            const queryTrimmed = query.trim().toLowerCase();
+
+            if (queryTrimmed.length < 2) { 
+                return;
+            }
+
+            const matchedDrugs = drugDatabase.filter(drug => 
+                drug.name.toLowerCase().startsWith(queryTrimmed)
+            ).slice(0, 5); // İlk 5 sonucu göster
+
+            matchedDrugs.forEach(drug => {
+                const item = document.createElement('div');
+                item.className = 'suggestion-item';
+                item.textContent = drug.name;
+                
+                // Tıklanıldığında direkt detay sayfasına git
+                item.onclick = () => {
+                    window.location.href = `drug-detail.html?id=${drug.id}`;
+                };
+                suggestionsBox.appendChild(item);
+            });
+        }
+        
+        // Arama çubuğu işlevi (ARA butonu veya Enter)
+        function performSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            suggestionsBox.innerHTML = ''; // Öneri kutusunu temizle
+
+            if (query) {
+                // Arama sorgusunu 'name' tipiyle drug-list.html'ye gönder
+                goToDrugList('name', query); 
+            } else {
+                alert('Lütfen aramak istediğiniz ilacın adını giriniz.');
+            }
+        }
+
+
+        // Kategorileri Yükleme, Buton Oluşturma ve Renklendirme
+        function loadAndRenderCategories() {
+            let categories = [];
+            const storedCategories = localStorage.getItem('drugCategories');
+            
+            if (storedCategories) {
+                categories = JSON.parse(storedCategories).sort((a, b) => a.localeCompare(b, 'tr'));
+            } else {
+                categories = defaultCategories.sort((a, b) => a.localeCompare(b, 'tr'));
+            }
+
+            categoryButtonsContainer.innerHTML = '';
+            categories.forEach((cat, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-button';
+                
+                // Renklendirme mantığı (8 renk)
+                const colorClass = categoryColors[index % categoryColors.length];
+                btn.classList.add(colorClass); 
+                
+                // ⭐ GÜNCELLENDİ: Sadece kategori adı yazdırılıyor ⭐
+                btn.textContent = cat; 
+                
+                btn.onclick = () => goToDrugList('category', cat);
+                categoryButtonsContainer.appendChild(btn);
+            });
+        }
+        
+        // Alfabetik Buton Oluşturma
+        function renderAlphabetButtons() {
+            alphaButtonsContainer.innerHTML = '';
+            alphabet.forEach(letter => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-button';
+                btn.textContent = letter;
+                btn.onclick = () => goToDrugList('alpha', letter);
+                alphaButtonsContainer.appendChild(btn);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadDrugDatabase(); 
+            loadAndRenderCategories();
+            renderAlphabetButtons();
+        });
+    </script>
+
+</body>
+</html>

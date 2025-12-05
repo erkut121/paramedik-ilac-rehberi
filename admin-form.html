@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlaç Ekle / Düzenle</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; }
+        #form-container { max-width: 800px; margin: 20px auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        h1 { color: #d9534f; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input[type="text"], textarea, select { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            box-sizing: border-box;
+            font-size: 1em;
+            resize: vertical; 
+        }
+        select[multiple] { height: 150px; }
+        .info-group { margin-top: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .info-group h3 { margin-top: 0; color: #007bff; border-bottom: 1px dotted #eee; padding-bottom: 5px; }
+        button { 
+            background-color: #5cb85c; 
+            color: white; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #4cae4c; }
+        .back-link { display: block; text-align: center; margin-top: 20px; font-size: 1em; color: #007bff; text-decoration: none; }
+
+        /* Seçilen kategoriler için stil */
+        #selected-categories-display {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 40px;
+            background-color: #f9f9f9;
+        }
+        .category-tag {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            margin: 3px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div id="form-container">
+        <h1 id="form-title">Yeni İlaç Ekle</h1>
+        
+        <form id="drug-form">
+            
+            <input type="hidden" id="original-id">
+
+            <div class="form-group">
+                <label for="id">ID (Benzersiz, zorunlu):</label>
+                <input type="text" id="id" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="name">İlaç Adı:</label>
+                <input type="text" id="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image_url">Görsel URL (İsteğe bağlı):</label>
+                <input type="text" id="image_url">
+            </div>
+
+            <div class="form-group">
+                <label for="short_summary">Kısa Özet:</label>
+                <textarea id="short_summary" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="categories">Kategoriler:</label>
+                <select id="categories" multiple required size="5">
+                    </select>
+                <div id="selected-categories-display"></div>
+                <small>Kategori seçmek için sadece tıklayın. Birden fazla kategori seçebilirsiniz.</small>
+            </div>
+
+            <div class="info-group">
+                <h3>Detaylı Bilgiler</h3>
+                <div class="form-group">
+                    <label for="farmakolojik_etki">Farmakolojik Etki:</label>
+                    <textarea id="farmakolojik_etki" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="endikasyon">Endikasyon:</label>
+                    <textarea id="endikasyon" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="kontraendikasyon">Kontraendikasyon:</label>
+                    <textarea id="kontraendikasyon" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="yan_etki">Yan Etki:</label>
+                    <textarea id="yan_etki" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="uygulama_yolu">Uygulama Yolu/Doz:</label>
+                    <textarea id="uygulama_yolu" rows="5"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="önemli_not">Önemli Not:</label>
+                    <textarea id="önemli_not" rows="5"></textarea>
+                </div>
+            </div>
+
+            <button type="submit">Kaydet ve Listeye Dön</button>
+        </form>
+
+        <a href="admin-list.html" class="back-link">← İlaç Listesine Geri Dön</a>
+    </div>
+
+    <script>
+        // Varsayılan kategoriler (localStorage boşsa kullanılır)
+        const defaultCategories = [
+            'Kardiyoloji/Resüsitasyon', 'Kardiyoloji/Antiaritmik', 'Kardiyoloji/Vazodilatör', 'Kardiyoloji/KKB', 
+            'Kardiyoloji/Antiplatelet', 'Kardiyoloji/Diüretik', 'Kardiyoloji/Antihipertansif', 
+            'Nörolojik/Sedatif', 'Nörolojik/Antikonvülzan', 'Analjezik/Opioid', 'İnotrop/Vazopresör', 
+            'Antidot', 'Solunum', 'Alerji', 'Endokrin/Alerji', 'Elektrolit', 'Gastrointestinal', 
+            'Anestezi', 'IV Sıvı', 'IV Sıvı/Metabolik', 'IV Sıvı/Diüretik'
+        ];
+        
+        let drugDatabase = [];
+        const categoriesSelect = document.getElementById('categories');
+        const selectedCategoriesDisplay = document.getElementById('selected-categories-display');
+        let currentSelectedCategories = []; // Seçilen kategorileri tutacak geçici dizi
+        
+        // Veritabanını yükleme ve kaydetme
+        function loadDrugDatabase() {
+            const storedDrugs = localStorage.getItem('drugDatabase');
+            if (storedDrugs) {
+                drugDatabase = JSON.parse(storedDrugs);
+            }
+        }
+
+        function saveDrugDatabase() {
+            localStorage.setItem('drugDatabase', JSON.stringify(drugDatabase));
+        }
+
+        // Kategori seçeneklerini yükler ve Select öğesine ekler
+        function loadCategoryOptions() {
+            let categories = [];
+            const storedCategories = localStorage.getItem('drugCategories');
+            
+            if (storedCategories) {
+                categories = JSON.parse(storedCategories).sort((a, b) => a.localeCompare(b, 'tr'));
+            } else {
+                categories = defaultCategories.sort((a, b) => a.localeCompare(b, 'tr'));
+            }
+
+            categoriesSelect.innerHTML = '';
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                categoriesSelect.appendChild(option);
+            });
+        }
+        
+        /**
+         * Seçilen kategoriler dizisini temel alarak Select kutusunu ve görsel etiket alanını günceller.
+         */
+        function updateCategorySelectionVisuals() {
+            // 1. Select kutusunu güncelle (Gerçek seçimi ayarlar)
+            Array.from(categoriesSelect.options).forEach(option => {
+                option.selected = currentSelectedCategories.includes(option.value);
+            });
+
+            // 2. Görsel etiket alanını (Tag Display) güncelle
+            selectedCategoriesDisplay.innerHTML = '';
+            currentSelectedCategories.forEach(cat => {
+                const tag = document.createElement('span');
+                tag.className = 'category-tag';
+                tag.textContent = cat;
+                selectedCategoriesDisplay.appendChild(tag);
+            });
+        }
+
+        /**
+         * Kullanıcının tıklamalarını yönetir (Ctrl/Cmd olmadan)
+         */
+        function handleCategorySelection(event) {
+            const clickedOption = event.target;
+            if (clickedOption.tagName !== 'OPTION') return;
+            
+            const categoryValue = clickedOption.value;
+            
+            // Eğer kategori zaten seçiliyse, onu diziden çıkar (seçimi kaldır)
+            if (currentSelectedCategories.includes(categoryValue)) {
+                currentSelectedCategories = currentSelectedCategories.filter(cat => cat !== categoryValue);
+            } 
+            // Eğer kategori seçili değilse, onu diziye ekle
+            else {
+                currentSelectedCategories.push(categoryValue);
+            }
+
+            // Görselleştirmeyi ve Select'in gerçek değerini güncelle
+            updateCategorySelectionVisuals();
+        }
+
+        // Formu yükle
+        function loadForm() {
+            loadDrugDatabase();
+            loadCategoryOptions();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const drugId = urlParams.get('id');
+
+            // Tıklama olayını handleCategorySelection'a bağla
+            categoriesSelect.addEventListener('click', handleCategorySelection); 
+
+            if (drugId) {
+                // Düzenleme modu
+                document.getElementById('form-title').textContent = "İlaç Düzenle";
+                const drug = drugDatabase.find(d => d.id === drugId);
+                
+                if (drug) {
+                    document.getElementById('id').value = drug.id;
+                    document.getElementById('id').disabled = true; // ID'yi düzenlemede kitle
+                    document.getElementById('original-id').value = drug.id; // Eski ID'yi tut
+
+                    document.getElementById('name').value = drug.name || '';
+                    document.getElementById('image_url').value = drug.image_url || '';
+                    document.getElementById('short_summary').value = drug.short_summary.trim() || '';
+
+                    // Kategorileri yükle (Yeni veya eski formatı destekler)
+                    currentSelectedCategories = Array.isArray(drug.categories) 
+                        ? drug.categories 
+                        : (drug.category ? [drug.category] : []);
+
+                    updateCategorySelectionVisuals(); // Görselleştirmeyi başlat
+
+                    // Detaylı bilgileri yükle
+                    for (const key in drug.info) {
+                        const element = document.getElementById(key);
+                        if (element && drug.info[key]) {
+                            element.value = drug.info[key].trim();
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Formu Gönderme
+        document.getElementById('drug-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const originalIdInput = document.getElementById('original-id');
+            const newDrugId = document.getElementById('id').value.trim().toLowerCase();
+
+            // Formdaki tüm verileri topla
+            const newDrug = {
+                id: newDrugId,
+                name: document.getElementById('name').value.trim(),
+                image_url: document.getElementById('image_url').value.trim(),
+                short_summary: document.getElementById('short_summary').value.trim(),
+                // currentSelectedCategories dizisini kullan
+                categories: currentSelectedCategories, 
+                info: {
+                    farmakolojik_etki: document.getElementById('farmakolojik_etki').value.trim(),
+                    endikasyon: document.getElementById('endikasyon').value.trim(),
+                    kontraendikasyon: document.getElementById('kontraendikasyon').value.trim(),
+                    yan_etki: document.getElementById('yan_etki').value.trim(),
+                    uygulama_yolu: document.getElementById('uygulama_yolu').value.trim(),
+                    önemli_not: document.getElementById('önemli_not').value.trim()
+                }
+            };
+
+            const currentEditingId = originalIdInput.value;
+            
+            // ID Benzersizlik Kontrolü
+            if (drugDatabase.some(d => d.id === newDrug.id && d.id !== currentEditingId)) {
+                alert('HATA: Bu ID (' + newDrug.id + ') başka bir ilaçta zaten kullanılıyor. Lütfen farklı bir ID seçin.');
+                return;
+            }
+
+            if (currentEditingId) {
+                // DÜZENLEME
+                drugDatabase = drugDatabase.filter(d => d.id !== currentEditingId); 
+                drugDatabase.push(newDrug);
+                alert(`İlaç (${newDrug.name}) başarıyla güncellendi!`);
+            } else {
+                // Yeni Kayıt
+                drugDatabase.push(newDrug);
+                alert(`Yeni ilaç (${newDrug.name}) başarıyla eklendi!`);
+            }
+            
+            saveDrugDatabase();
+            window.location.href = 'admin-list.html';
+        });
+
+        // Yetkilendirme kontrolü ve formu yükleme
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('isAuthenticated') !== 'true') {
+                alert('Bu sayfaya erişim yetkiniz yok. Giriş sayfasına yönlendiriliyorsunuz.');
+                window.location.href = 'admin.html';
+                return;
+            }
+            loadForm();
+        });
+    </script>
+
+</body>
+</html>

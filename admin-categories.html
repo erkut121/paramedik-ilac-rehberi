@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategori Yönetimi</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 15px; }
+        h1 { color: #d9534f; margin: 0; }
+        .back-link, .logout-btn { padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s; text-decoration: none; color: white; background-color: #6c757d; }
+        .back-link:hover { background-color: #5a6268; }
+
+        #category-management { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        #add-form input[type="text"], #add-form button { padding: 10px; margin-right: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        #add-form button { background-color: #5cb85c; color: white; border: none; cursor: pointer; }
+        #add-form button:hover { background-color: #4cae4c; }
+
+        #category-list { list-style: none; padding: 0; margin-top: 20px; }
+        #category-list li { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 10px; margin-bottom: 8px; border-radius: 5px; background-color: #f8f9fa;
+            border-left: 5px solid #007bff; 
+        }
+        .action-btns button { padding: 5px 10px; margin-left: 5px; border: none; border-radius: 3px; cursor: pointer; color: white; }
+        .edit-btn { background-color: #f0ad4e; }
+        .delete-btn { background-color: #d9534f; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Kategori Yönetimi</h1>
+        <a href="admin-list.html" class="back-link">← İlaç Listesine Dön</a>
+    </header>
+
+    <div id="category-management">
+        <h2>Yeni Kategori Ekle</h2>
+        <form id="add-form">
+            <input type="text" id="category-input" placeholder="Yeni kategori adı" required>
+            <button type="submit" id="add-btn">Ekle</button>
+        </form>
+
+        <h2>Mevcut Kategoriler</h2>
+        <ul id="category-list">
+            </ul>
+    </div>
+
+    <script>
+        // Varsayılan Kategoriler (Eğer localStorage boşsa kullanılacak)
+        const defaultCategories = [
+            'Kardiyoloji/Resüsitasyon', 'Kardiyoloji/Antiaritmik', 'Kardiyoloji/Vazodilatör', 'Kardiyoloji/KKB', 
+            'Kardiyoloji/Antiplatelet', 'Kardiyoloji/Diüretik', 'Kardiyoloji/Antihipertansif', 
+            'Nörolojik/Sedatif', 'Nörolojik/Antikonvülzan', 'Analjezik/Opioid', 'İnotrop/Vazopresör', 
+            'Antidot', 'Solunum', 'Alerji', 'Endokrin/Alerji', 'Elektrolit', 'Gastrointestinal', 
+            'Anestezi', 'IV Sıvı', 'IV Sıvı/Metabolik', 'IV Sıvı/Diüretik'
+        ];
+        
+        let categories = [];
+        let drugDatabase = [];
+        const categoryListElement = document.getElementById('category-list');
+
+        // --- Veritabanı (localStorage) İşlemleri ---
+
+        async function loadDrugDatabase() {
+            const storedDrugs = localStorage.getItem('drugDatabase');
+            if (storedDrugs) {
+                drugDatabase = JSON.parse(storedDrugs);
+            } else {
+                 try {
+                    const response = await fetch('drugs.json');
+                    drugDatabase = response.ok ? await response.json() : [];
+                } catch (error) {
+                    drugDatabase = [];
+                }
+            }
+        }
+        
+        function loadCategories() {
+            const storedCategories = localStorage.getItem('drugCategories');
+            if (storedCategories) {
+                categories = JSON.parse(storedCategories).sort();
+            } else {
+                categories = defaultCategories.sort();
+                saveCategories();
+            }
+        }
+
+        function saveCategories() {
+            localStorage.setItem('drugCategories', JSON.stringify(categories));
+        }
+
+        // --- CRUD İşlemleri ---
+
+        function renderCategories() {
+            categoryListElement.innerHTML = '';
+            if (categories.length === 0) {
+                categoryListElement.innerHTML = '<li>Kayıtlı kategori bulunmamaktadır.</li>';
+                return;
+            }
+
+            categories.forEach(cat => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${cat}</span>
+                    <div class="action-btns">
+                        <button class="edit-btn" data-category="${cat}">Düzenle</button>
+                        <button class="delete-btn" data-category="${cat}">Sil</button>
+                    </div>
+                `;
+                categoryListElement.appendChild(li);
+            });
+        }
+
+        function addCategory(name) {
+            name = name.trim();
+            if (name === '') {
+                alert('Kategori adı boş olamaz.');
+                return;
+            }
+            if (categories.includes(name)) {
+                alert(`'${name}' kategorisi zaten mevcut.`);
+                return;
+            }
+            categories.push(name);
+            categories.sort();
+            saveCategories();
+            renderCategories();
+            document.getElementById('category-input').value = '';
+        }
+
+        function editCategory(oldName, newName) {
+            newName = newName.trim();
+            if (newName === '') {
+                alert('Yeni kategori adı boş olamaz.');
+                return;
+            }
+            if (oldName === newName) {
+                return; 
+            }
+            if (categories.includes(newName)) {
+                alert(`'${newName}' kategorisi zaten mevcut.`);
+                return;
+            }
+
+            // GÜNCEL KOD: İlaç veritabanındaki eski kategori adını yeni adla güncelle (Geriye uyumluluk dahil)
+            drugDatabase.forEach(drug => {
+                // Yeni format (Dizi)
+                if (Array.isArray(drug.categories)) {
+                    const index = drug.categories.indexOf(oldName);
+                    if (index !== -1) {
+                        drug.categories[index] = newName;
+                    }
+                } 
+                // Eski format (String)
+                else if (drug.category === oldName) { 
+                    drug.category = newName;
+                }
+            });
+            localStorage.setItem('drugDatabase', JSON.stringify(drugDatabase));
+
+            // Kategori listesindeki adı güncelle
+            const index = categories.indexOf(oldName);
+            if (index !== -1) {
+                categories[index] = newName;
+                categories.sort();
+                saveCategories();
+                renderCategories();
+                alert(`Kategori adı '${oldName}' den '${newName}' olarak güncellendi.`);
+            }
+        }
+
+        function deleteCategory(name) {
+            // GÜNCEL KOD: Bu kategoriyi kullanan ilaç var mı? (Geriye uyumluluk dahil)
+            const isUsedInArray = drugDatabase.some(drug => 
+                Array.isArray(drug.categories) && drug.categories.includes(name)
+            );
+            const isUsedInString = drugDatabase.some(drug => drug.category === name);
+
+
+            if (isUsedInArray || isUsedInString) {
+                alert(`HATA: '${name}' kategorisi en az bir ilaç tarafından kullanılıyor. Lütfen önce o ilaçları güncelleyin.`);
+                return;
+            }
+
+            if (confirm(`'${name}' kategorisini silmek istediğinizden emin misiniz?`)) {
+                categories = categories.filter(cat => cat !== name);
+                saveCategories();
+                renderCategories();
+            }
+        }
+
+        // --- Olay Dinleyicileri ---
+
+        document.getElementById('add-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('category-input');
+            addCategory(input.value);
+        });
+
+        categoryListElement.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-btn')) {
+                deleteCategory(e.target.dataset.category);
+            } else if (e.target.classList.contains('edit-btn')) {
+                const oldName = e.target.dataset.category;
+                const newName = prompt(`'${oldName}' kategorisinin yeni adını girin:`, oldName);
+                if (newName !== null) {
+                    editCategory(oldName, newName);
+                }
+            }
+        });
+
+        // --- Başlatma ---
+
+        async function initCategories() {
+            if (localStorage.getItem('isAuthenticated') !== 'true') {
+                alert('Yetkisiz Erişim! Lütfen giriş yapın.');
+                window.location.href = 'admin.html';
+                return;
+            }
+
+            await loadDrugDatabase();
+            loadCategories();
+            renderCategories();
+        }
+
+        document.addEventListener('DOMContentLoaded', initCategories);
+    </script>
+
+</body>
+</html>

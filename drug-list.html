@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">İlaç Listesi</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f0f2f5; }
+        header { background-color: #007bff; color: white; padding: 20px; text-align: center; position: relative; }
+        .back-link { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: white; text-decoration: none; font-weight: bold; font-size: 1.1em; }
+        #list-title { margin: 0; font-size: 1.5em; }
+        #drug-list-container { max-width: 800px; margin: 20px auto; padding: 0 20px; }
+        .list-item { background-color: white; border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; font-size: 1.1em; }
+        .list-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-link">← Geri</a>
+        <h1 id="list-title">İlaç Listesi</h1>
+    </header>
+    
+    <div id="drug-list-container">
+        </div>
+
+    <script>
+        let drugDatabase = [];
+        const container = document.getElementById('drug-list-container');
+        
+        async function fetchInitialData() {
+            try {
+                // Önce localStorage'ı kontrol et, yoksa drugs.json'dan yükle
+                const storedDrugs = localStorage.getItem('drugDatabase');
+                if (storedDrugs) {
+                    return JSON.parse(storedDrugs);
+                }
+
+                const response = await fetch('drugs.json');
+                return response.ok ? await response.json() : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        async function initList() {
+            drugDatabase = await fetchInitialData();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type');
+            const value = urlParams.get('value');
+
+            filterAndRenderList(type, value);
+        }
+
+        function filterAndRenderList(type, value) {
+            let filteredDrugs = [];
+
+            if (type === 'category' && value) {
+                // Kategori filtreleme
+                filteredDrugs = drugDatabase.filter(drug => {
+                    const isNewFormatMatch = Array.isArray(drug.categories) && drug.categories.includes(value);
+                    const isOldFormatMatch = drug.category === value;
+                    return isNewFormatMatch || isOldFormatMatch;
+                });
+                document.getElementById('list-title').textContent = `${value.split('/')[0]} İlaçları`; 
+            
+            } else if (type === 'alpha' && value) {
+                // Alfabetik filtreleme
+                filteredDrugs = drugDatabase.filter(drug => drug.name.toUpperCase().startsWith(value.toUpperCase()));
+                document.getElementById('list-title').textContent = `${value} Harfiyle Başlayan İlaçlar`;
+            
+            } else if (type === 'name' && value) {
+                // ⭐ GÜNCEL: Tam İsim Arama Filtreleme ⭐
+                const lowerCaseValue = value.toLowerCase();
+                filteredDrugs = drugDatabase.filter(drug => 
+                    drug.name.toLowerCase().includes(lowerCaseValue)
+                );
+                document.getElementById('list-title').textContent = `'${value}' İçeren İlaçlar`;
+            
+            } else {
+                 // Tüm ilaçları listele
+                 document.getElementById('list-title').textContent = `Tüm İlaçlar`;
+                 filteredDrugs = drugDatabase;
+            }
+            
+            // Sırala
+            filteredDrugs.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+
+            if (filteredDrugs.length === 0) {
+                container.innerHTML = `<p style="text-align: center;">Bu filtreye uygun ilaç bulunamadı.</p>`;
+            } else {
+                container.innerHTML = ''; // Önceki içeriği temizle
+                filteredDrugs.forEach(drug => {
+                    const item = document.createElement('div');
+                    item.className = 'list-item';
+                    item.textContent = drug.name;
+                    
+                    // Detay sayfasına doğru yönlendirme
+                    item.onclick = () => {
+                        window.location.href = `drug-detail.html?id=${drug.id}`;
+                    };
+                    
+                    container.appendChild(item);
+                });
+            }
+        }
+        
+        // DOM yüklendikten sonra initList'i çağır
+        document.addEventListener('DOMContentLoaded', initList);
+    </script>
+
+</body>
+</html>

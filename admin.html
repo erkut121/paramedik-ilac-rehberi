@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetici Girişi</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 10vh; }
+        .login-container { background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); width: 100%; max-width: 400px; text-align: center; }
+        h1 { color: #d9534f; margin-bottom: 20px; }
+        label { display: block; text-align: left; margin-top: 15px; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 5px; background-color: #007bff; color: white; font-size: 1.1em; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #0056b3; }
+        #message { color: #d9534f; margin-top: 15px; font-weight: bold; }
+        .back-link { display: block; text-align: center; margin-top: 20px; font-size: 1em; color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h1>🛠️ Yönetici Paneli Girişi</h1>
+        
+        <form id="login-form">
+            <label for="username">Kullanıcı Adı:</label>
+            <input type="text" id="username" value="admin" required>
+            
+            <label for="password">Parola:</label>
+            <input type="password" id="password" value="123456" required>
+            
+            <button type="submit">Giriş Yap</button>
+            <p id="message"></p>
+        </form>
+
+        <a href="index.html" class="back-link">← Ana Sayfaya Geri Dön</a>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+
+            if (username === 'admin' && password === '123456') {
+                localStorage.setItem('isAuthenticated', 'true');
+                window.location.href = 'admin-list.html';
+            } else {
+                message.textContent = 'Hatalı Kullanıcı Adı veya Parola!';
+                localStorage.removeItem('isAuthenticated');
+            }
+        });
+    </script>
+
+</body>
+</html>
